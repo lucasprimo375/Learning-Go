@@ -24,3 +24,15 @@ This will generate an executable in the go installation folder
 ```bash
 go install
 ```
+
+## To get external module
+
+```bash
+go get <link-to-external-module>
+```
+
+## To Remove All Unused Dependencies
+
+```bash
+go mod tidy
+```
