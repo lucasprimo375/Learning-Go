@@ -38,5 +38,31 @@ func main() {
 	fmt.Println(slice2)
 
 	array3[1] = 500 // pointers in action
-	fmt.Println(slice2)
+	fmt.Println(slice2, "\n")
+
+	fmt.Println("Internal Arrays\n")
+
+	slice3 := make([]float32, 10, 11)
+	fmt.Println("slice3: ", slice3)
+	fmt.Println("lengh of slice3: ", len(slice3))
+	fmt.Println("capacity of slice3: ", cap(slice3), "\n")
+
+	slice3 = append(slice3, 5)
+	slice3 = append(slice3, 50)
+	fmt.Println("Trying to overflow slice3")
+	fmt.Println("slice3: ", slice3)
+	fmt.Println("lengh of slice3: ", len(slice3))
+	fmt.Println("capacity of slice3: ", cap(slice3))
+	fmt.Println("The slice will grow its capacity as needed!\n")
+
+	slice4 := make([]float32, 5)
+	fmt.Println("slice4: ", slice4)
+	fmt.Println("lengh of slice4: ", len(slice4))
+	fmt.Println("capacity of slice4: ", cap(slice4))
+	fmt.Println("No need to specify the initial capacity of the slice!\n")
+
+	slice4 = append(slice4, 500)
+	fmt.Println("Adding one item into slice4...")
+	fmt.Println("lengh of slice4: ", len(slice4))
+	fmt.Println("capacity of slice4: ", cap(slice4))
 }
