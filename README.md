@@ -31,7 +31,7 @@ go install
 go get <link-to-external-module>
 ```
 
-## To Remove All Unused Dependencies
+## To remove all Unused dependencies
 
 ```bash
 go mod tidy
