@@ -36,4 +36,12 @@ func main() {
 	fmt.Println(sumTotal)
 
 	write("string", 1, 2, 3, 4, 5, 6, 7, 8)
+
+	// anonymous functions
+	text := "sample text"
+	text1 := func(text string) string {
+		fmt.Println("Anonymous function:", text)
+		return fmt.Sprintf("Got %s", text)
+	}(text)
+	fmt.Println("Anonymous function returns:", text1)
 }
