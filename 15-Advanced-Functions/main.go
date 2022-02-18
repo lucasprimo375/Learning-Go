@@ -56,6 +56,28 @@ func isApproved(grade1, grade2 float64) bool {
 	return false
 }
 
+func recoverExecution() {
+	fmt.Println("Trying to recover execution")
+
+	if r := recover(); r != nil { // recover returns nil if execution is not in panic
+		fmt.Println("Execution recovered successfully")
+	}
+}
+
+func isApproved2(grade1, grade2 float64) bool {
+	defer recoverExecution()
+
+	finalGrade := (grade1 + grade2) / 2.0
+
+	if finalGrade > 6 {
+		return true
+	} else if finalGrade < 6 {
+		return false
+	}
+
+	panic("Final grande is exactly 6!")
+}
+
 func main() {
 	fmt.Println("Advanced Functions")
 
@@ -84,4 +106,8 @@ func main() {
 	func2()
 
 	fmt.Println(isApproved(7, 8))
+
+	// Panic and Recover
+	fmt.Println("isApproved2=", isApproved2(6, 6))
+	fmt.Println("Post execution")
 }
