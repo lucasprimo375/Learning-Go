@@ -34,6 +34,28 @@ func fibonacci(index uint) uint {
 	return fibonacci(index-1) + fibonacci(index-2)
 }
 
+func func1() {
+	fmt.Println("Executing func1")
+}
+
+func func2() {
+	fmt.Println("Executing func2")
+}
+
+func isApproved(grade1, grade2 float64) bool {
+	defer fmt.Println("Final grande calculated. Result will be returned")
+
+	fmt.Println("Entering function to check if student is approved")
+
+	finalGrade := (grade1 + grade2) / 2.0
+
+	if finalGrade >= 6 {
+		return true
+	}
+
+	return false
+}
+
 func main() {
 	fmt.Println("Advanced Functions")
 
@@ -57,4 +79,9 @@ func main() {
 	var fibonacciResult uint = fibonacci(10)
 	fmt.Println(fibonacciResult)
 
+	fmt.Println("Defer clause")
+	defer func1() // postpone the execution of func1 until possible
+	func2()
+
+	fmt.Println(isApproved(7, 8))
 }
