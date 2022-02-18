@@ -26,6 +26,14 @@ func write(text string, numbers ...int) { // can have only one variadic paramete
 	}
 }
 
+func fibonacci(index uint) uint {
+	if index <= 1 {
+		return index
+	}
+
+	return fibonacci(index-1) + fibonacci(index-2)
+}
+
 func main() {
 	fmt.Println("Advanced Functions")
 
@@ -44,4 +52,9 @@ func main() {
 		return fmt.Sprintf("Got %s", text)
 	}(text)
 	fmt.Println("Anonymous function returns:", text1)
+
+	fmt.Println("Recursive Functions")
+	var fibonacciResult uint = fibonacci(10)
+	fmt.Println(fibonacciResult)
+
 }
