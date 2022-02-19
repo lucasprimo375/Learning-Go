@@ -36,3 +36,17 @@ go get <link-to-external-module>
 ```bash
 go mod tidy
 ```
+
+# Testing
+
+## Test file name
+All test files must end with _test.go, i.e. mytest_test.go
+
+## Test function name
+All test functions must start with Test, i.e. TestMyFunction
+
+## Running a test
+Run the following command in the same folder as the file test:
+```bash
+go test
+```
