@@ -73,10 +73,10 @@ go test --coverprofile <result-file>.txt
 
 To read file generated in previous statement:
 ```bash
-go tool cover --func=result.txt
+go tool cover --func=<result-file>.txt
 ```
 
 To generate HTML file showing which statements were not covered:
 ```bash
-go tool cover -html=coverage.out
+go tool cover -html=<result-file>.txt
 ```
