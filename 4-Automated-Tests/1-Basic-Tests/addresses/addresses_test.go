@@ -1,8 +1,11 @@
 // unit tests
 
-package adresses
+package addresses // only tests can use a package with a different name than the folder
 
-import "testing"
+import (
+	"testing"
+	//"tests/addresses" // can write an alias before the package name: .; no need to mention the package when calling a function from it
+)
 
 type testScenario struct {
 	receivedAddress string
@@ -10,6 +13,8 @@ type testScenario struct {
 }
 
 func TestTypeOfAddress(t *testing.T) {
+	//t.Parallel() // all tests with this stamente in run in parallel
+
 	testScenarios := []testScenario{
 		{"Street ABC", "Street"},
 		{"Avenue Paulista", "Avenue"},
@@ -29,5 +34,13 @@ func TestTypeOfAddress(t *testing.T) {
 		if receivedAddressType != scenario.expectedAddress {
 			t.Errorf("Received type %s is different than expected type %s", receivedAddressType, scenario.expectedAddress)
 		}
+	}
+}
+
+func TestWhatever(t *testing.T) {
+	//t.Parallel()
+
+	if 1 > 2 {
+		t.Error("Broken test")
 	}
 }

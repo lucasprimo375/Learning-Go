@@ -50,3 +50,33 @@ Run the following command in the same folder as the file test:
 ```bash
 go test
 ```
+
+Run the following command to run all tests in each package (from module root directory):
+```bash
+go test ./...
+```
+
+Verbose mode:
+```bash
+go test -v
+```
+
+Statement coverage of the package in the test:
+```bash
+go test --cover
+```
+
+To generate file with more details about coverage:
+```bash
+go test --coverprofile <result-file>.txt
+```
+
+To read file generated in previous statement:
+```bash
+go tool cover --func=result.txt
+```
+
+To generate HTML file showing which statements were not covered:
+```bash
+go tool cover -html=coverage.out
+```

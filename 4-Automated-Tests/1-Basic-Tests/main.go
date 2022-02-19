@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"tests/adresses"
+	"tests/addresses"
 )
 
 func main() {
-	addressType := adresses.TypeOfAddress("Avenue Paulista")
+	addressType := addresses.TypeOfAddress("Avenue Paulista")
 	fmt.Println(addressType)
 
-	addressType = adresses.TypeOfAddress("Invalid address")
+	addressType = addresses.TypeOfAddress("Invalid address")
 	fmt.Println(addressType)
 }
