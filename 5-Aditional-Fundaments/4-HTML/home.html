@@ -21,9 +21,15 @@
 <body>
     <h2>Home Page</h2>
     
-    <marquee>
-        <h4>Welcome, {{ .Name }}!</h4>
-    </marquee>
+    <button id="myButton">Click me!</button>
+
+    <script>
+        var button = document.getElementById("myButton")
+
+        button.onclick = function() {
+            alert("You clicked the button!")
+        }
+    </script>
     
 </body>
 </html>
