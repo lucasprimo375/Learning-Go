@@ -1,9 +1,10 @@
 package database
 
 import (
-	"database/sql"
-	_ "github.com/go-sql-driver/mysql v1.6.0" // Driver
 	"api/src/config"
+	"database/sql"
+
+	_ "github.com/go-sql-driver/mysql" // Driver
 )
 
 func Connect() (*sql.DB, error) {
@@ -17,6 +18,6 @@ func Connect() (*sql.DB, error) {
 		db.Close()
 		return nil, error
 	}
-	
+
 	return db, nil
 }
