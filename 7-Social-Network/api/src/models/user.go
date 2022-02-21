@@ -15,8 +15,8 @@ type User struct {
 	CreationDate time.Time `json:"creationDate,omitempty"`
 }
 
-func (user *User) Prepare() error {
-	error := user.validate()
+func (user *User) Prepare(step string) error {
+	error := user.validate(step)
 	if error != nil {
 		return error
 	}
@@ -26,7 +26,7 @@ func (user *User) Prepare() error {
 	return nil
 }
 
-func (user *User) validate() error {
+func (user *User) validate(step string) error {
 	if user.Name == "" {
 		return errors.New("Name can not be empty")
 	}
@@ -39,7 +39,7 @@ func (user *User) validate() error {
 		return errors.New("Email can not be empty")
 	}
 
-	if user.Password == "" {
+	if step == "register" && user.Password == "" {
 		return errors.New("Password can not be empty")
 	}
 

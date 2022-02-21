@@ -11,9 +11,11 @@ func JSON(w http.ResponseWriter, statusCode int, data interface{}) {
 
 	w.WriteHeader(statusCode)
 
-	error := json.NewEncoder(w).Encode(data)
-	if error != nil {
-		log.Fatal(error)
+	if data != nil {
+		error := json.NewEncoder(w).Encode(data)
+		if error != nil {
+			log.Fatal(error)
+		}
 	}
 }
 
