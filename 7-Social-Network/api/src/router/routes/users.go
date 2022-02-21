@@ -19,7 +19,7 @@ var usersRoutes = []Route{
 		RequiresAuthentication: false,
 	},
 	{
-		URI:                    "/users/{userId}",
+		URI:                    "/users/{userID}",
 		Method:                 http.MethodGet,
 		Function:               controllers.GetUser,
 		RequiresAuthentication: false,
@@ -31,7 +31,7 @@ var usersRoutes = []Route{
 		RequiresAuthentication: false,
 	},
 	{
-		URI:                    "/users/{userId}",
+		URI:                    "/users/{userID}",
 		Method:                 http.MethodDelete,
 		Function:               controllers.DeleteUser,
 		RequiresAuthentication: false,
