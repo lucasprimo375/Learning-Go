@@ -3,6 +3,7 @@ package repository
 import (
 	"api/src/models"
 	"database/sql"
+	"fmt"
 )
 
 type users struct {
@@ -33,4 +34,33 @@ func (repository users) Create(user models.User) (uint64, error) {
 	}
 
 	return uint64(lastInsertedID), nil
+}
+
+func (repository users) Get(nameOrNick string) ([]models.User, error) {
+	nameOrNick = fmt.Sprintf("%%%s%%", nameOrNick)
+
+	rows, error := repository.db.Query(
+		"select id, name, nick, email, creationDate from users where name like ? or nick like ?",
+		nameOrNick,
+		nameOrNick,
+	)
+	if error != nil {
+		return nil, error
+	}
+	defer rows.Close()
+
+	var users []models.User
+
+	for rows.Next() {
+		var user models.User
+
+		error = rows.Scan(&user.ID, &user.Name, &user.Nick, &user.Email, &user.CreationDate)
+		if error != nil {
+			return nil, error
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
 }
