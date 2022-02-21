@@ -184,3 +184,35 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+
+	ID, error := strconv.ParseUint(parameters["id"], 10, 32)
+	if error != nil {
+		w.Write([]byte("Failed to convert parameter ID to integer"))
+		return
+	}
+
+	db, error := database.Connect()
+	if error != nil {
+		w.Write([]byte("Failed to connect to database"))
+		return
+	}
+	defer db.Close()
+
+	statement, error := db.Prepare("delete from users where id = ?")
+	if error != nil {
+		w.Write([]byte("Failed to prepare statement"))
+		return
+	}
+	defer statement.Close()
+
+	_, error = statement.Exec(ID)
+	if error != nil {
+		w.Write([]byte("Failed to execute statement"))
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
