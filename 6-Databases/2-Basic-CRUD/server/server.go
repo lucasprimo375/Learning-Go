@@ -138,3 +138,49 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+
+	ID, error := strconv.ParseUint(parameters["id"], 10, 32)
+	if error != nil {
+		w.Write([]byte("Failed to convert parameter ID to integer"))
+		return
+	}
+
+	requisitionBody, error := ioutil.ReadAll(r.Body)
+	if error != nil {
+		w.Write([]byte("Failed to read requisition body"))
+		return
+	}
+
+	var user user
+
+	error = json.Unmarshal(requisitionBody, &user)
+	if error != nil {
+		w.Write([]byte("Failed to convert user to struct"))
+		return
+	}
+
+	db, error := database.Connect()
+	if error != nil {
+		w.Write([]byte("Failed to connect to database"))
+		return
+	}
+	defer db.Close()
+
+	statement, error := db.Prepare("update users set name = ?, email = ? where id = ?")
+	if error != nil {
+		w.Write([]byte("Failed to prepare statement"))
+		return
+	}
+	defer statement.Close()
+
+	_, error = statement.Exec(user.Name, user.Email, ID)
+	if error != nil {
+		w.Write([]byte("Failed to execute statement"))
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
