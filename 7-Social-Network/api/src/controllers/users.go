@@ -6,6 +6,7 @@ import (
 	"api/src/models"
 	"api/src/repository"
 	"api/src/responses"
+	"api/src/security"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -327,4 +328,74 @@ func GetFollowing(w http.ResponseWriter, r *http.Request) {
 	}
 
 	responses.JSON(w, http.StatusOK, users)
+}
+
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	userIDOnToken, error := authentication.ExtractUserID(r)
+	if error != nil {
+		responses.Error(w, http.StatusUnauthorized, error)
+		return
+	}
+
+	parameters := mux.Vars(r)
+
+	userID, error := strconv.ParseUint(parameters["userID"], 10, 64)
+	if error != nil {
+		responses.Error(w, http.StatusBadRequest, error)
+		return
+	}
+
+	if userIDOnToken != userID {
+		responses.Error(w, http.StatusForbidden, errors.New("Impossible to update the password of another user"))
+		return
+	}
+
+	requestBody, error := ioutil.ReadAll(r.Body)
+	if error != nil {
+		responses.Error(w, http.StatusUnprocessableEntity, error)
+		return
+	}
+
+	var password models.Password
+
+	error = json.Unmarshal(requestBody, &password)
+	if error != nil {
+		responses.Error(w, http.StatusBadRequest, error)
+		return
+	}
+
+	db, error := database.Connect()
+	if error != nil {
+		responses.Error(w, http.StatusInternalServerError, error)
+		return
+	}
+	defer db.Close()
+
+	repository := repository.NewUsersRepository(db)
+
+	passwordOnDatabse, error := repository.GetPassword(userID)
+	if error != nil {
+		responses.Error(w, http.StatusInternalServerError, error)
+		return
+	}
+
+	error = security.CheckPassword(password.Current, passwordOnDatabse)
+	if error != nil {
+		responses.Error(w, http.StatusUnauthorized, errors.New("Current password is not correct"))
+		return
+	}
+
+	passwordHash, error := security.Hash(password.New)
+	if error != nil {
+		responses.Error(w, http.StatusBadRequest, error)
+		return
+	}
+
+	error = repository.UpdatePassword(userID, string(passwordHash))
+	if error != nil {
+		responses.Error(w, http.StatusInternalServerError, error)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, nil)
 }
