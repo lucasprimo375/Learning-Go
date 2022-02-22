@@ -8,6 +8,17 @@ import (
 	"net/http"
 )
 
+/*func init() {
+	key := make([]byte, 64)
+
+	_, error := rand.Read(key)
+	if error != nil {
+		log.Fatal(error)
+	}
+
+	base64String := base64.StdEncoding.EncodeToString(key)
+}*/
+
 func main() {
 	config.Load()
 
