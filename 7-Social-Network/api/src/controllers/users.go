@@ -301,3 +301,30 @@ func GetFollowers(w http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(w, http.StatusOK, followers)
 }
+
+func GetFollowing(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+
+	userID, error := strconv.ParseUint(parameters["userID"], 10, 64)
+	if error != nil {
+		responses.Error(w, http.StatusBadRequest, error)
+		return
+	}
+
+	db, error := database.Connect()
+	if error != nil {
+		responses.Error(w, http.StatusInternalServerError, error)
+		return
+	}
+	defer db.Close()
+
+	repository := repository.NewUsersRepository(db)
+
+	users, error := repository.GetFollowing(userID)
+	if error != nil {
+		responses.Error(w, http.StatusInternalServerError, error)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, users)
+}
