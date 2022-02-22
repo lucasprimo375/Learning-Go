@@ -210,7 +210,7 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 
 	userID, error := strconv.ParseUint(parameters["followedUserID"], 10, 64)
 	if error != nil {
-		responses.Error(w, http.StatusUnauthorized, error)
+		responses.Error(w, http.StatusBadRequest, error)
 		return
 	}
 
@@ -229,6 +229,44 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 	repository := repository.NewUsersRepository(db)
 
 	error = repository.Follow(userID, followerID)
+	if error != nil {
+		responses.Error(w, http.StatusInternalServerError, error)
+		return
+	}
+
+	responses.JSON(w, http.StatusNoContent, nil)
+}
+
+func UnFollowUser(w http.ResponseWriter, r *http.Request) {
+	followerID, error := authentication.ExtractUserID(r)
+	if error != nil {
+		responses.Error(w, http.StatusUnauthorized, error)
+		return
+	}
+
+	parameters := mux.Vars(r)
+
+	userID, error := strconv.ParseUint(parameters["followedUserID"], 10, 64)
+	if error != nil {
+		responses.Error(w, http.StatusBadRequest, error)
+		return
+	}
+
+	if followerID == userID {
+		responses.Error(w, http.StatusForbidden, errors.New("Impossible to unfollow self"))
+		return
+	}
+
+	db, error := database.Connect()
+	if error != nil {
+		responses.Error(w, http.StatusInternalServerError, error)
+		return
+	}
+	defer db.Close()
+
+	repository := repository.NewUsersRepository(db)
+
+	error = repository.UnFollow(userID, followerID)
 	if error != nil {
 		responses.Error(w, http.StatusInternalServerError, error)
 		return

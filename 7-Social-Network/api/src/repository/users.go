@@ -154,3 +154,18 @@ func (repository users) Follow(userID, followerID uint64) error {
 
 	return nil
 }
+
+func (repository users) UnFollow(userID, followerID uint64) error {
+	statement, error := repository.db.Prepare("delete from followers where user_id = ? and follower_id = ?")
+	if error != nil {
+		return error
+	}
+	defer statement.Close()
+
+	_, error = statement.Exec(userID, followerID)
+	if error != nil {
+		return error
+	}
+
+	return nil
+}
