@@ -101,3 +101,20 @@ func (repository Publications) Get(userID uint64) ([]models.Publication, error) 
 
 	return publications, nil
 }
+
+func (repository Publications) Update(publicationID uint64, publication models.Publication) error {
+	statement, err := repository.db.Prepare(
+		"update publications set title = ?, content = ? where id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(publication.Title, publication.Content, publicationID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
