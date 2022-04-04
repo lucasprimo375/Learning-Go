@@ -60,7 +60,30 @@ func CreatePublication(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusCreated, publication)
 }
 
-func GetPublications(w http.ResponseWriter, r *http.Request) {}
+func GetPublications(w http.ResponseWriter, r *http.Request) {
+	userID, err := authentication.ExtractUserID(r)
+	if err != nil {
+		responses.Error(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repository.NewPublicationsRepository(db)
+
+	publications, err := repository.Get(userID)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, publications)
+}
 
 func GetPublication(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
