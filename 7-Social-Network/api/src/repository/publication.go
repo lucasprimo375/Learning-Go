@@ -186,3 +186,23 @@ func (repository Publications) Like(publicationID uint64) error {
 
 	return nil
 }
+
+func (repository Publications) Dislike(publicationID uint64) error {
+	statement, err := repository.db.Prepare(`
+		update publications set
+		likes = case when likes > 0 then likes - 1 else likes end
+		where id = ?
+		`,
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(publicationID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
