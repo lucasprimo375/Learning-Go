@@ -169,3 +169,20 @@ func (repository Publications) GetPublicationsByUser(userID uint64) ([]models.Pu
 
 	return publications, nil
 }
+
+func (repository Publications) Like(publicationID uint64) error {
+	statement, err := repository.db.Prepare(
+		"update publications set likes = likes + 1 where id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(publicationID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
