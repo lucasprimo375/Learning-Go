@@ -135,3 +135,37 @@ func (repository Publications) Delete(publicationID uint64) error {
 
 	return nil
 }
+
+func (repository Publications) GetPublicationsByUser(userID uint64) ([]models.Publication, error) {
+	rows, err := repository.db.Query(`
+		select p.*, u.nick
+		from publications p inner join users u on u.id = p.author_id
+		where p.author_id = ?
+	`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var publications []models.Publication
+
+	for rows.Next() {
+		var publication models.Publication
+
+		err = rows.Scan(
+			&publication.ID,
+			&publication.Title,
+			&publication.Content,
+			&publication.AuthorID,
+			&publication.Likes,
+			&publication.CreationDate,
+			&publication.AuthorNick)
+		if err != nil {
+			return nil, err
+		}
+
+		publications = append(publications, publication)
+	}
+
+	return publications, nil
+}
