@@ -1,8 +1,11 @@
 package controllers
 
-import "net/http"
+import (
+	"net/http"
+	"webapp/src/utils"
+)
 
 // LoadLoginPage renders login page
 func LoadLoginPage(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Login page"))
+	utils.ExecuteTemplate(w, "login.html", nil)
 }
