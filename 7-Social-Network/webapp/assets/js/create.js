@@ -1,9 +1,9 @@
 $("#create-form").on("submit", CreateUser);
 
 function CreateUser(event) {
-    event.preventDefault()
+    event.preventDefault();
     
-    if ($("#password").val() != $("#confirm-password").val()) {
+    if($("#password").val() != $("#confirm-password").val()){
         alert("Passwords are different!");
         return;
     }
@@ -17,5 +17,10 @@ function CreateUser(event) {
             nick: $("#nick").val(),
             password: $("#password").val()
         }
-    })
+    }).done(function() {
+        alert("User created successfully");
+    }).fail(function(error) {
+        console.log(error)
+        alert("Error when creating user");
+    });
 }
