@@ -67,11 +67,16 @@ func (repository Publications) GetByID(ID uint64) (models.Publication, error) {
 
 func (repository Publications) Get(userID uint64) ([]models.Publication, error) {
 	rows, err := repository.db.Query(`
-		select distinct p.*, u.nick
-		from publications p 
+		select p.*, u.nick
+		from publications p
+		inner join users u on u.id = p.author_id
+		where p.author_id = ?
+		UNION
+		select p.*, u.nick
+		from publications p
 		inner join users u on u.id = p.author_id
 		inner join followers f on p.author_id = f.user_id
-		where u.id = ? or f.follower_id = ?
+		where f.follower_id = ?
 		order by 1 desc
 	`, userID, userID)
 	if err != nil {

@@ -12,7 +12,10 @@ func MakeRequestWithAuthentication(r *http.Request, method, url string, data io.
 		return nil, err
 	}
 
-	cookie, _ := cookies.Read(r)
+	cookie, err := cookies.Read(r)
+	if err != nil {
+		return nil, err
+	}
 
 	request.Header.Add("Authorization", "Bearer "+cookie["token"])
 
