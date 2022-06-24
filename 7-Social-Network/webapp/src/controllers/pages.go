@@ -42,7 +42,5 @@ func LoadMainPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(publications)
-
 	utils.ExecuteTemplate(w, "home.html", publications)
 }
