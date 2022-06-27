@@ -1,0 +1,36 @@
+{{ define "likes"}}
+<span>{{ .Likes }} Likes</span>
+{{ end }}
+
+{{ define "edit" }}
+<a href="/edit">Edit</a>
+{{ end }}
+
+{{ define "delete" }}
+<a href="/delete">Delete</a>
+{{ end }}
+
+{{ define "header-publication" }}
+    <h1 class="display-4">{{ .Title }}</h1>
+    <p class="lead">{{ .Content }}</p>
+    <a href="#">{{ .AuthorNick }} - {{ .CreationDate.Format "02/01/2006 3:4" }}</a>
+    <hr class="my-4">
+{{ end }}
+
+{{ define "publication-with-permission" }}
+<div class="bg-light p-5 rounded-lg m-3" data-publication-id="{{ .ID }}">
+    {{ template "header-publication" . }}
+    <p>
+        {{ template "likes" . }}
+        {{ template "edit" }}
+        {{ template "delete" }}
+    </p>
+</div>
+{{ end }}
+
+{{ define "publication-without-permission" }}
+<div class="bg-light p-5 rounded-lg m-3" data-publication-id="{{ .ID }}">
+    {{ template "header-publication" . }}
+    <p>{{ template "likes" . }}</p>
+</div>
+{{ end }}
