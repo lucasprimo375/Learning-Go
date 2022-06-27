@@ -60,13 +60,19 @@
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
-                {{ range . }}
+                {{ range .Publications }}
                 <div class="bg-light p-5 rounded-lg m-3">
                     <h1 class="display-4">{{.Title}}</h1>
                     <p class="lead">{{.Content}}</p>
                     <a href="#">{{.AuthorNick}} - {{.CreationDate}}</a>
                     <hr class="my-4">
-                    <p>Buttons</p>
+
+                    {{ if(eq .AuthorID $.UserID) }}
+                    <p>Buttons Like, Edit, Delete</p>
+                    {{ else }}
+                    <p>Buttons Like</p>
+                    {{ end }}
+
                   </div>
                 {{ end }}
             </div>
