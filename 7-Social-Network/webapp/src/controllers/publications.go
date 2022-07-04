@@ -5,10 +5,39 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"webapp/src/config"
 	"webapp/src/requests"
 	"webapp/src/responses"
+
+	"github.com/gorilla/mux"
 )
+
+func LikePublication(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+
+	publicationID, err := strconv.ParseUint(parameters["publicationID"], 10, 64)
+	if err != nil {
+		responses.JSON(w, http.StatusBadRequest, responses.APIError{Error: err.Error()})
+		return
+	}
+
+	url := fmt.Sprintf("%s/publications/%d/like", config.APIURL, publicationID)
+
+	response, err := requests.MakeRequestWithAuthentication(r, http.MethodPost, url, nil)
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.APIError{Error: err.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		responses.ProcessErrorStatusCode(w, response)
+		return
+	}
+
+	responses.JSON(w, response.StatusCode, nil)
+}
 
 func CreatePublication(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
