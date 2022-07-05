@@ -1,5 +1,35 @@
 $("#new-publication").on("submit", createPublication);
-$(".like-publication").on("click", likePublication);
+$(document).on("click", ".like-publication", likePublication);
+$(document).on("click", ".dislike-publication", dislikePublication);
+
+function dislikePublication(event) {
+    event.preventDefault();
+
+    const clickedElement = $(event.target);
+
+    const publicationID = clickedElement.closest("div").data("publication-id");
+
+    clickedElement.prop("disabled", true);
+
+    $.ajax({
+        url: `/publications/${publicationID}/dislike`,
+        method: "POST"
+    }).done(function() {
+        const likeCounter = clickedElement.next("span");
+
+        const likes = parseInt(likeCounter.text())
+
+        likeCounter.text(likes - 1);
+
+        clickedElement.removeClass("dislike-publication")
+        clickedElement.removeClass("text-danger")
+        clickedElement.addClass("like-publication")
+    }).fail(function() {
+        alert("Problem when disliking publication")
+    }).always(function() {
+        clickedElement.prop("disabled", false);
+    });
+}
 
 function likePublication(event) {
     event.preventDefault();
@@ -19,6 +49,10 @@ function likePublication(event) {
         const likes = parseInt(likeCounter.text())
 
         likeCounter.text(likes + 1);
+
+        clickedElement.addClass("dislike-publication")
+        clickedElement.addClass("text-danger")
+        clickedElement.removeClass("like-publication")
     }).fail(function() {
         alert("Problem when liking publication")
     }).always(function() {

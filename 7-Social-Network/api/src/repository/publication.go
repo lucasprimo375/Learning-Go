@@ -22,7 +22,7 @@ func (repository Publications) Create(publication models.Publication) (uint64, e
 	}
 	defer statement.Close()
 
-	result, err := statement.Exec(publication.Title, publication.Title, publication.AuthorID)
+	result, err := statement.Exec(publication.Title, publication.Content, publication.AuthorID)
 	if err != nil {
 		return 0, err
 	}
