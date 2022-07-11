@@ -2,6 +2,28 @@ $("#new-publication").on("submit", createPublication);
 $(document).on("click", ".like-publication", likePublication);
 $(document).on("click", ".dislike-publication", dislikePublication);
 $("#update-publication").on("click", updatePublication);
+$(".delete-publication").on("click", deletePublication);
+
+function deletePublication(event) {
+    event.preventDefault();
+
+    const clickedElement = $(event.target);
+    const publication = clickedElement.closest("div");
+    const publicationID = publication.data("publication-id");
+
+    clickedElement.prop("disabled", true);
+
+    $.ajax({
+        url: `/publications/${publicationID}`,
+        method: "DELETE"
+    }).done(function(){
+        publication.fadeOut("slow", function(){
+            $(this).remove();
+        });
+    }).fail(function(){
+        alert("Error when deleting publication");
+    });
+}
 
 function updatePublication() {
     $(this).prop("disabled", true);
