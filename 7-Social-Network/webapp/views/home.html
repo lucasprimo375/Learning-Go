@@ -9,33 +9,6 @@
 </head>
 <body>
   {{template "header"}}
-    
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">Social Network</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbar-main">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/home">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/profile">My Profile</a>
-              </li>
-              <li class="nav-item">
-                <form class="d-flex" role="search" action="/search-user" method="GET">
-                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search User" id="user" name="user" required="required">
-                </form>
-              </li>
-            </ul>
-
-            <span class="navbar-text p-0">
-              <a href="/logout">Logout</a>
-            </span>
-          </div>
-        </div>
-      </nav>
 
       <div class="container-fluid">
         <div class="row mt-4">

@@ -30,4 +30,10 @@ var publicationRoutes = []Route{
 		Function:               controllers.LoadEditPublicationPage,
 		RequiresAuthentication: true,
 	},
+	{
+		URI:                    "/publications/{publicationID}",
+		Method:                 http.MethodPut,
+		Function:               controllers.UpdatePublication,
+		RequiresAuthentication: true,
+	},
 }

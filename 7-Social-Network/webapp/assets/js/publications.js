@@ -1,6 +1,28 @@
 $("#new-publication").on("submit", createPublication);
 $(document).on("click", ".like-publication", likePublication);
 $(document).on("click", ".dislike-publication", dislikePublication);
+$("#update-publication").on("click", updatePublication);
+
+function updatePublication() {
+    $(this).prop("disabled", true);
+
+    const publicationID = $(this).data("publication-id");
+    
+    $.ajax({
+        url: `/publications/${publicationID}`,
+        method: "PUT",
+        data: {
+            title: $("#title").val(),
+            content: $("#content").val()
+        }
+    }).done(function(){
+        alert("Publication updated successfully");
+    }).fail(function(){
+        alert("Error when updating publication");
+    }).always(function(){
+        $("#update-publication").prop("disabled", false);
+    });
+}
 
 function dislikePublication(event) {
     event.preventDefault();
