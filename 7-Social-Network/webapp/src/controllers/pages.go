@@ -50,6 +50,13 @@ func LoadEditPublicationPage(w http.ResponseWriter, r *http.Request) {
 
 // LoadLoginPage renders login page
 func LoadLoginPage(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := cookies.Read(r)
+
+	if cookie["token"] != "" {
+		http.Redirect(w, r, "/home", http.StatusFound)
+		return
+	}
+
 	utils.ExecuteTemplate(w, "login.html", nil)
 }
 
