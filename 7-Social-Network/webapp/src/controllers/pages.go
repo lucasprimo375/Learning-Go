@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"webapp/src/config"
 	"webapp/src/cookies"
 	"webapp/src/models"
@@ -14,6 +15,34 @@ import (
 
 	"github.com/gorilla/mux"
 )
+
+func LoadSearchUsersPage(w http.ResponseWriter, r *http.Request) {
+	nameOrNick := strings.ToLower(r.URL.Query().Get("user"))
+
+	url := fmt.Sprintf("%s/users?user=%s", config.APIURL, nameOrNick)
+
+	response, err := requests.MakeRequestWithAuthentication(r, http.MethodGet, url, nil)
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.APIError{Error: err.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		responses.ProcessErrorStatusCode(w, response)
+		return
+	}
+
+	var users []models.User
+
+	err = json.NewDecoder(response.Body).Decode(&users)
+	if err != nil {
+		responses.JSON(w, http.StatusUnprocessableEntity, responses.APIError{Error: err.Error()})
+		return
+	}
+
+	utils.ExecuteTemplate(w, "users.html", users)
+}
 
 func LoadEditPublicationPage(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
