@@ -4,7 +4,7 @@ function CreateUser(event) {
     event.preventDefault();
     
     if($("#password").val() != $("#confirm-password").val()){
-        alert("Passwords are different!");
+        Swal.fire("Oops...", "Passwords are different!", "error");
         return;
     }
 
@@ -18,9 +18,22 @@ function CreateUser(event) {
             password: $("#password").val()
         }
     }).done(function() {
-        alert("User created successfully");
-    }).fail(function(error) {
-        console.log(error)
-        alert("Error when creating user");
+        Swal.fire("Success!", "User created successfully!", "success")
+            .then(function(){
+                $.ajax({
+                    url: "/login",
+                    method: "POST",
+                    data: {
+                        email: $("#email").val(),
+                        password: $("#password").val()
+                    }
+                }).done(function(){
+                    window.location = "/home";
+                }).fail(function(){
+                    Swal.fire("Oops...", "Error when authenticating user", "error");
+                });
+            });
+    }).fail(function(err) {
+        Swal.fire("Oops...", "Error when creating user", "error");
     });
 }

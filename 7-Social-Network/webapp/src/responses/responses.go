@@ -11,10 +11,10 @@ type APIError struct {
 }
 
 func JSON(w http.ResponseWriter, statusCode int, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 
-	if data != nil {
-		w.Header().Set("Content-Type", "application/json")
+	if statusCode != http.StatusNoContent {
 		err := json.NewEncoder(w).Encode(data)
 		if err != nil {
 			log.Fatal(err)

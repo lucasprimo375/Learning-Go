@@ -23,7 +23,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	url := fmt.Sprintf("%s/login", config.APIURL)
+	url := fmt.Sprintf("%s/users", config.APIURL)
 
 	response, err := http.Post(url, "application/json", bytes.NewBuffer(user))
 	if err != nil {
