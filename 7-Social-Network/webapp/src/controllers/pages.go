@@ -16,6 +16,18 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func LoadUserProfile(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+
+	userID, err := strconv.ParseUint(parameters["userID"], 10, 64)
+	if err != nil {
+		responses.JSON(w, http.StatusBadRequest, responses.APIError{Error: err.Error()})
+		return
+	}
+
+	user, err := models.GetCompleteUser(userID, r)
+}
+
 func LoadSearchUsersPage(w http.ResponseWriter, r *http.Request) {
 	nameOrNick := strings.ToLower(r.URL.Query().Get("user"))
 
