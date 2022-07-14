@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -31,7 +32,56 @@ func GetCompleteUser(userID uint64, r *http.Request) (User, error) {
 	go GetFollowing(followingChannel, userID, r)
 	go GetPublications(publicationsChannel, userID, r)
 
-	return User{}, nil
+	var (
+		user         User
+		followers    []User
+		following    []User
+		publications []Publication
+	)
+
+	for i := 0; i < 4; i++ {
+		select {
+		case loadedUser := <-userChannel:
+			if loadedUser.ID == 0 {
+				return User{}, errors.New("error when getting user")
+			}
+
+			user = loadedUser
+
+		case loadedFollowers := <-followersChannel:
+			if loadedFollowers == nil {
+				return User{}, errors.New("error when getting followers")
+			}
+
+			// removing dummy element
+			loadedFollowers = loadedFollowers[:len(loadedFollowers)-1]
+			followers = loadedFollowers
+
+		case loadedFollowing := <-followingChannel:
+			if loadedFollowing == nil {
+				return User{}, errors.New("error when getting following")
+			}
+
+			// removing dummy element
+			loadedFollowing = loadedFollowing[:len(loadedFollowing)-1]
+			following = loadedFollowing
+
+		case loadedPublications := <-publicationsChannel:
+			if loadedPublications == nil {
+				return User{}, errors.New("error when getting publications")
+			}
+
+			// removing dummy element
+			loadedPublications = loadedPublications[:len(loadedPublications)-1]
+			publications = loadedPublications
+		}
+	}
+
+	user.Followers = followers
+	user.Following = following
+	user.Publications = publications
+
+	return user, nil
 }
 
 func GetUserData(channel chan<- User, userID uint64, r *http.Request) {
@@ -73,6 +123,9 @@ func GetFollowers(channel chan<- []User, userID uint64, r *http.Request) {
 		return
 	}
 
+	// adding dummy user so that GetCompleteUser doesn't return false posisitves
+	followers = append(followers, User{})
+
 	channel <- followers
 }
 
@@ -94,6 +147,9 @@ func GetFollowing(channel chan<- []User, userID uint64, r *http.Request) {
 		return
 	}
 
+	// adding dummy user so that GetCompleteUser doesn't return false posisitves
+	following = append(following, User{})
+
 	channel <- following
 }
 
@@ -114,6 +170,9 @@ func GetPublications(channel chan<- []Publication, userID uint64, r *http.Reques
 		channel <- nil
 		return
 	}
+
+	// adding dummy publication so that GetCompleteUser doesn't return false posisitves
+	publications = append(publications, Publication{})
 
 	channel <- publications
 }

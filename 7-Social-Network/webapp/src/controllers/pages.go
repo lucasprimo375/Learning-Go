@@ -26,6 +26,8 @@ func LoadUserProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user, err := models.GetCompleteUser(userID, r)
+
+	fmt.Println(user, err)
 }
 
 func LoadSearchUsersPage(w http.ResponseWriter, r *http.Request) {
