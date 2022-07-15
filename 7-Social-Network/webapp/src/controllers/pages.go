@@ -26,8 +26,21 @@ func LoadUserProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user, err := models.GetCompleteUser(userID, r)
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.APIError{Error: err.Error()})
+		return
+	}
 
-	fmt.Println(user, err)
+	cookie, _ := cookies.Read(r)
+	loggedUserID, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	utils.ExecuteTemplate(w, "user.html", struct {
+		User         models.User
+		LoggedUserID uint64
+	}{
+		User:         user,
+		LoggedUserID: loggedUserID,
+	})
 }
 
 func LoadSearchUsersPage(w http.ResponseWriter, r *http.Request) {
