@@ -5,9 +5,65 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"webapp/src/config"
+	"webapp/src/requests"
 	"webapp/src/responses"
+
+	"github.com/gorilla/mux"
 )
+
+func Follow(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+
+	userID, err := strconv.ParseUint(parameters["userID"], 10, 64)
+	if err != nil {
+		responses.JSON(w, http.StatusBadRequest, responses.APIError{Error: err.Error()})
+		return
+	}
+
+	url := fmt.Sprintf("%s/users/%d/follow", config.APIURL, userID)
+
+	response, err := requests.MakeRequestWithAuthentication(r, http.MethodPost, url, nil)
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.APIError{Error: err.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		responses.ProcessErrorStatusCode(w, response)
+		return
+	}
+
+	responses.JSON(w, response.StatusCode, nil)
+}
+
+func UnFollow(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+
+	userID, err := strconv.ParseUint(parameters["userID"], 10, 64)
+	if err != nil {
+		responses.JSON(w, http.StatusBadRequest, responses.APIError{Error: err.Error()})
+		return
+	}
+
+	url := fmt.Sprintf("%s/users/%d/unFollow", config.APIURL, userID)
+
+	response, err := requests.MakeRequestWithAuthentication(r, http.MethodPost, url, nil)
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.APIError{Error: err.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		responses.ProcessErrorStatusCode(w, response)
+		return
+	}
+
+	responses.JSON(w, response.StatusCode, nil)
+}
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()

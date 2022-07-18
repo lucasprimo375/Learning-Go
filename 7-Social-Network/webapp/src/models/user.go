@@ -53,8 +53,6 @@ func GetCompleteUser(userID uint64, r *http.Request) (User, error) {
 				return User{}, errors.New("error when getting followers")
 			}
 
-			// removing dummy element
-			loadedFollowers = loadedFollowers[:len(loadedFollowers)-1]
 			followers = loadedFollowers
 
 		case loadedFollowing := <-followingChannel:
@@ -62,8 +60,6 @@ func GetCompleteUser(userID uint64, r *http.Request) (User, error) {
 				return User{}, errors.New("error when getting following")
 			}
 
-			// removing dummy element
-			loadedFollowing = loadedFollowing[:len(loadedFollowing)-1]
 			following = loadedFollowing
 
 		case loadedPublications := <-publicationsChannel:
@@ -71,8 +67,6 @@ func GetCompleteUser(userID uint64, r *http.Request) (User, error) {
 				return User{}, errors.New("error when getting publications")
 			}
 
-			// removing dummy element
-			loadedPublications = loadedPublications[:len(loadedPublications)-1]
 			publications = loadedPublications
 		}
 	}
@@ -123,8 +117,10 @@ func GetFollowers(channel chan<- []User, userID uint64, r *http.Request) {
 		return
 	}
 
-	// adding dummy user so that GetCompleteUser doesn't return false posisitves
-	followers = append(followers, User{})
+	if followers == nil {
+		channel <- make([]User, 0)
+		return
+	}
 
 	channel <- followers
 }
@@ -147,8 +143,10 @@ func GetFollowing(channel chan<- []User, userID uint64, r *http.Request) {
 		return
 	}
 
-	// adding dummy user so that GetCompleteUser doesn't return false posisitves
-	following = append(following, User{})
+	if following == nil {
+		channel <- make([]User, 0)
+		return
+	}
 
 	channel <- following
 }
@@ -171,8 +169,10 @@ func GetPublications(channel chan<- []Publication, userID uint64, r *http.Reques
 		return
 	}
 
-	// adding dummy publication so that GetCompleteUser doesn't return false posisitves
-	publications = append(publications, Publication{})
+	if publications == nil {
+		channel <- make([]Publication, 0)
+		return
+	}
 
 	channel <- publications
 }

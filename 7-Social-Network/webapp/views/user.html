@@ -12,8 +12,8 @@
 
     {{ $FollowedByLoggedUser := false }}
     {{ range .User.Followers }}
-        {{ if (eq .ID $.User.LoggedUserID) }}
-            {{ $FollowedByLoggedUser := true }}
+        {{ if (eq .ID $.LoggedUserID) }}
+            {{ $FollowedByLoggedUser = true }}
         {{ end }}
     {{ end }}
 
@@ -75,5 +75,6 @@
     {{ template "scripts" }}
 
     <script src="/assets/js/publications.js"></script>
+    <script src="/assets/js/user.js"></script>
 </body>
 </html>
