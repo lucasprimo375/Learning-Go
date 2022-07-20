@@ -1,5 +1,27 @@
 $("#unfollow").on("click", unFollow);
 $("#follow").on("click", follow);
+$("#edit-user").on("submit", editUser);
+
+function editUser(event) {
+    event.preventDefault();
+
+    $.ajax({
+        url: "/edit-profile",
+        method: "PUT",
+        data: {
+            name: $("#name").val(),
+            email: $("#email").val(),
+            nick: $("#nick").val()
+        }
+    }).done(function(){
+        Swal.fire("Success!", "Profile updated successfully!", "success")
+            .then(function(){
+                window.location = "/profile"
+            });
+    }).fail(function() {
+        Swal.fire("Ops...", "Error when updating profile!", "error");
+    });
+}
 
 function unFollow(event) {
     event.preventDefault();

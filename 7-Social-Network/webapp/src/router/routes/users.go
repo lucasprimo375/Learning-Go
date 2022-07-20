@@ -48,4 +48,16 @@ var userRoutes = []Route{
 		Function:               controllers.LoadLoggedUserProfile,
 		RequiresAuthentication: true,
 	},
+	{
+		URI:                    "/edit-profile",
+		Method:                 http.MethodGet,
+		Function:               controllers.LoadEditProfilePage,
+		RequiresAuthentication: true,
+	},
+	{
+		URI:                    "/edit-profile",
+		Method:                 http.MethodPut,
+		Function:               controllers.EditProfile,
+		RequiresAuthentication: true,
+	},
 }

@@ -16,6 +16,24 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func LoadEditProfilePage(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := cookies.Read(r)
+
+	userID, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	channel := make(chan models.User)
+	go models.GetUserData(channel, userID, r)
+
+	user := <-channel
+
+	if user.ID == 0 {
+		responses.JSON(w, http.StatusInternalServerError, responses.APIError{Error: "error when getting user data"})
+		return
+	}
+
+	utils.ExecuteTemplate(w, "edit-user.html", user)
+}
+
 func LoadLoggedUserProfile(w http.ResponseWriter, r *http.Request) {
 	cookie, _ := cookies.Read(r)
 
