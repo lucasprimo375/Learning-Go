@@ -16,6 +16,20 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func LoadLoggedUserProfile(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := cookies.Read(r)
+
+	userID, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	user, err := models.GetCompleteUser(userID, r)
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.APIError{Error: err.Error()})
+		return
+	}
+
+	utils.ExecuteTemplate(w, "profile.html", user)
+}
+
 func LoadUserProfile(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
@@ -33,6 +47,11 @@ func LoadUserProfile(w http.ResponseWriter, r *http.Request) {
 
 	cookie, _ := cookies.Read(r)
 	loggedUserID, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	if loggedUserID == userID {
+		http.Redirect(w, r, "/profile", http.StatusFound)
+		return
+	}
 
 	utils.ExecuteTemplate(w, "user.html", struct {
 		User         models.User
