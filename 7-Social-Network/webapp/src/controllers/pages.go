@@ -16,6 +16,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func LoadUpdatePasswordPage(w http.ResponseWriter, r *http.Request) {
+	utils.ExecuteTemplate(w, "update-password.html", nil)
+}
+
 func LoadEditProfilePage(w http.ResponseWriter, r *http.Request) {
 	cookie, _ := cookies.Read(r)
 

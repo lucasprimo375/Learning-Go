@@ -1,6 +1,32 @@
 $("#unfollow").on("click", unFollow);
 $("#follow").on("click", follow);
 $("#edit-user").on("submit", editUser);
+$("#update-password").on("submit", updatePassword);
+
+function updatePassword(event) {
+    event.preventDefault();
+
+    if ($("#new-password").val() == $("#confirm-new-password").val()){
+        Swal.fire("Ops...", "New passwords are not the same", "warning");
+        return;
+    }
+
+    $.ajax({
+        url: "/update-password",
+        method: "POST",
+        data: {
+            current: $("#current-password").val(),
+            new: $("#new-password").val()
+        }
+    }).done(function(){
+        Swal.fire("Success!", "Password updated successfully!", "success")
+            .then(function(){
+                window.location = "/profile";
+            });
+    }).fail(function() {
+        Swal.fire("Ops...", "Error when updating password!", "error");
+    });
+}
 
 function editUser(event) {
     event.preventDefault();
@@ -16,7 +42,7 @@ function editUser(event) {
     }).done(function(){
         Swal.fire("Success!", "Profile updated successfully!", "success")
             .then(function(){
-                window.location = "/profile"
+                window.location = "/profile";
             });
     }).fail(function() {
         Swal.fire("Ops...", "Error when updating profile!", "error");
