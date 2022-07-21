@@ -14,6 +14,38 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	passwords, err := json.Marshal(map[string]string{
+		"current": r.FormValue("current"),
+		"new":     r.FormValue("new"),
+	})
+	if err != nil {
+		responses.JSON(w, http.StatusBadRequest, responses.APIError{Error: err.Error()})
+		return
+	}
+
+	cookie, _ := cookies.Read(r)
+	userID, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	url := fmt.Sprintf("%s/users/%d/updatePassword", config.APIURL, userID)
+
+	response, err := requests.MakeRequestWithAuthentication(r, http.MethodPost, url, bytes.NewBuffer(passwords))
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.APIError{Error: err.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		responses.ProcessErrorStatusCode(w, response)
+		return
+	}
+
+	responses.JSON(w, response.StatusCode, nil)
+}
+
 func EditProfile(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 

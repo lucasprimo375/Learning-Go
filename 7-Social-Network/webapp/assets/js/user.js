@@ -6,7 +6,7 @@ $("#update-password").on("submit", updatePassword);
 function updatePassword(event) {
     event.preventDefault();
 
-    if ($("#new-password").val() == $("#confirm-new-password").val()){
+    if ($("#new-password").val() != $("#confirm-new-password").val()){
         Swal.fire("Ops...", "New passwords are not the same", "warning");
         return;
     }
