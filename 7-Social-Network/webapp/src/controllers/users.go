@@ -14,6 +14,27 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func DeleteProfile(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := cookies.Read(r)
+	userID, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	url := fmt.Sprintf("%s/users/%d", config.APIURL, userID)
+
+	response, err := requests.MakeRequestWithAuthentication(r, http.MethodDelete, url, nil)
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.APIError{Error: err.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		responses.ProcessErrorStatusCode(w, response)
+		return
+	}
+
+	responses.JSON(w, response.StatusCode, nil)
+}
+
 func UpdatePassword(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 

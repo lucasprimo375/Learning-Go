@@ -2,6 +2,31 @@ $("#unfollow").on("click", unFollow);
 $("#follow").on("click", follow);
 $("#edit-user").on("submit", editUser);
 $("#update-password").on("submit", updatePassword);
+$("#delete-profile").on("click", DeleteProfile);
+
+function DeleteProfile() {
+    Swal.fire({
+        title: "Atention!",
+        text: "Are you sure you want to delete your profile permanently? This is an irreversible action!",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        icon: "warning"
+    }).then(function(confirmation){
+        if (confirmation.value) {
+            $.ajax({
+                url: "/delete-profile",
+                method: "DELETE"
+            }).done(function(){
+                Swal.fire("Success!", "Your profile was deleted successfully", "success")
+                    .then(function(){
+                        window.location = "/logout"
+                    });
+            }).fail(function(){
+                Swal.fire("Ops...", "Error when deleting your profile", "error")
+            });
+        }
+    });
+}
 
 function updatePassword(event) {
     event.preventDefault();
